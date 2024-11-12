@@ -1,6 +1,6 @@
 import pandas as pd
 
-def dataloader(data_path = 'dataset/steam_reviews'):
+def load_data(data_path = 'dataset/steam_reviews'):
     testset_path = data_path + '/train_dev_test_split/test.csv'
     devset_path = data_path + '/train_dev_test_split/dev.csv'
     trainset_path = data_path + '/train_dev_test_split/train.csv'

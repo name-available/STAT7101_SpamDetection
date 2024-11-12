@@ -1,6 +1,6 @@
 import pandas as pd
 
-def dataloader(data_path):
+def load_data(data_path = 'dataset/youtube_spam'):
     testset_path = data_path + '/train_dev_test_split/test.csv'
     devset_path = data_path + '/train_dev_test_split/dev.csv'
     trainset_path = data_path + '/train_dev_test_split/train.csv'
@@ -13,7 +13,7 @@ def dataloader(data_path):
 
 
 if __name__ == "__main__":
-    train_loader, dev_loader, test_loader = dataloader('dataset/youtube_spam')
+    train_loader, dev_loader, test_loader = load_data('dataset/youtube_spam')
     print(train_loader.head())
     print(dev_loader.head())
     print(test_loader.head())
