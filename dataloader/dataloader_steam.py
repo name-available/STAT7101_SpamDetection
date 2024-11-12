@@ -13,7 +13,7 @@ def load_data(data_path = 'dataset/steam_reviews'):
 
 
 if __name__ == "__main__":
-    train_loader, dev_loader, test_loader = dataloader('dataset/steam_reviews')
+    train_loader, dev_loader, test_loader = load_data('dataset/steam_reviews')
     print(train_loader.head())
     print(dev_loader.head())
     print(test_loader.head())
