@@ -1,5 +1,4 @@
 import pandas as pd
-import torch
 
 class YoutubeSpamDataset:
     def __init__(self, data_path = 'dataset/youtube_spam'):
