@@ -13,3 +13,10 @@ logs为实验日志
 model为baseline模型
 
 module为模型组件
+
+## 待做
+1. 增加LR/RNN/LSTM/GRU等上古模型
+2. 使用Transformer-encoder进行分类
+3. 使用mamba Block堆积木
+
+
