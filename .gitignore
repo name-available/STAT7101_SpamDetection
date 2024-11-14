@@ -1,2 +1,3 @@
-/checkpoint
-*/__pycache__/*
+/checkpoints
+__pycache__
+
