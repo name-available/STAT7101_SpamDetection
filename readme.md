@@ -15,8 +15,14 @@ model为baseline模型
 module为模型组件
 
 ## 待做
-1. 增加LR/RNN/LSTM/GRU等上古模型
-2. 使用Transformer-encoder进行分类
-3. 使用mamba Block堆积木
+1. 使用LR/RNN/LSTM/GRU等上古模型，记录数据用于对比
+2. 使用Transformer-encoder
+3. mamba Block+基线模型（可选）
+4. 绘制实验图（用于制作PPT）
+
+## 已做
+（用于记录已经获取的实验图）
+1. youtube数据集数据分析图
+2. steam数据集数据分析图
 
 
