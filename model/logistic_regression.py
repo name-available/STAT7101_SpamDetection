@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-class LogisticRegressionModel(nn.Module):
+class LogisticRegression(nn.Module):
     def __init__(self, input_dim):
-        super(LogisticRegressionModel, self).__init__()
+        super(LogisticRegression, self).__init__()
         self.linear = nn.Linear(input_dim, 1)
 
     def forward(self, x):
@@ -15,7 +15,7 @@ class LogisticRegressionModel(nn.Module):
 
 
 def main():
-    model = LogisticRegressionModel(384)
+    model = LogisticRegression(384)
     example_X = torch.randn(2, 384)
 
     print("Input shape:", example_X.shape)

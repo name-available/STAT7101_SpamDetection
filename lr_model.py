@@ -1,5 +1,5 @@
 from torch import nn
-from model.logistic_regression_model import LogisticRegressionModel
+from model.logistic_regression import LogisticRegression
 from dataloader.dataloader_youtube_spam import YoutubeSpamDataset
 from train_test_setting import train_model, test_model
 
@@ -10,8 +10,8 @@ def main():
     print(dev_loader.dataset.tensors[0].shape)
     print(test_loader.dataset.tensors[0].shape)
 
-    
-    model = LogisticRegressionModel(384)
+
+    model = LogisticRegression(384)
     criterion = nn.BCELoss()
     train_model(model, criterion=criterion, train_dataloader=train_loader, dev_dataloader=dev_loader)
     test_model(model, criterion=criterion, test_dataloader=test_loader)
