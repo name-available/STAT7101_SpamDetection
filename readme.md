@@ -13,3 +13,17 @@ logs为实验日志
 model为baseline模型
 
 module为模型组件
+
+## 待做
+1. 使用LR/RNN/LSTM/GRU等上古模型，记录数据用于对比
+2. 当前使用的text embed model为hugging face的all-MiniLM-L6-v2，维度为384，可以尝试采取文本嵌入模型看看效果（可选）
+3. 使用Transformer-encoder
+4. mamba Block+基线模型（可选）
+5. 绘制实验图（用于制作PPT）
+
+## 已做
+（用于记录已经获取的实验图）
+1. youtube数据集数据分析图
+2. steam数据集数据分析图
+
+
