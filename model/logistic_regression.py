@@ -2,18 +2,18 @@ import torch
 import torch.nn as nn
 
 class LogisticRegression(nn.Module):
-    def __init__(self, input_dim):
+    def __init__(self, input_dim, dropout=0.5):
         super(LogisticRegression, self).__init__()
         self.model = nn.Sequential(
             nn.Linear(input_dim, 256),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
             nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
             nn.Linear(128, 64),
             nn.ReLU(),
-            nn.Dropout(0.5),
+            nn.Dropout(dropout),
             nn.Linear(64, 1)
         )
 

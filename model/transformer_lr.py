@@ -10,5 +10,14 @@ class TransformerLR(nn.Module):
 
     def forward(self, x):
         x = self.transformer_encoder(x)
-        x = x.mean(dim=1)
         return torch.sigmoid(self.linear(x))
+    
+def main():
+    model = TransformerLR(384)
+    example_X = torch.randn(2, 384)
+
+    output = model(example_X)
+    print("Output shape:", output.shape)
+
+if __name__ == "__main__":
+    main()

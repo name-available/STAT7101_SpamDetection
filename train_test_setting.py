@@ -5,17 +5,27 @@ import torch.optim as optim
 from sklearn.metrics import f1_score
 
 from parameters import get_parameters
+from tqdm import tqdm
 
 args = get_parameters()
 
 def train_model(model, criterion, train_dataloader, dev_dataloader, args = args):
+    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print("Training model with cude ..." if torch.cuda.is_available() else "Training model with cpu ...")
+    
+    model.to(device)
     best_model_path = args.best_model_path
     if os.path.exists(best_model_path):
         model.load_state_dict(torch.load(best_model_path))
 
-    print("Training model...")
     criterion = criterion
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+
+
+
 
     # Create checkpoints directory if it doesn't exist
     if not os.path.exists('checkpoints'):
@@ -29,10 +39,13 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
     with open(log_file_path, 'a') as log_file:
         # Training loop
         num_epochs = args.epochs
+        
         for epoch in range(num_epochs):
             model.train()
             for batch in train_dataloader:
                 inputs, labels = batch
+                inputs, labels = inputs.to(device), labels.to(device)
+
                 optimizer.zero_grad()
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
@@ -49,6 +62,8 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
                     all_labels = []
                     for dev_batch in dev_dataloader:
                         dev_inputs, dev_labels = dev_batch
+                        dev_inputs, dev_labels = dev_inputs.to(device), dev_labels.to(device)
+
                         y_pred_dev = model(dev_inputs)
                         loss = criterion(y_pred_dev, dev_labels)
                         dev_loss += loss.item()
@@ -75,7 +90,10 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
 
 
 def test_model(model, criterion, test_dataloader, args = args):
-    print("Testing model...")
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print("Testing model with cude ..." if torch.cuda.is_available() else "Testing model with cpu ...")
+    model.to(device)
+
     criterion = criterion
     model.load_state_dict(torch.load(args.best_model_path))
     model.eval()
@@ -91,6 +109,8 @@ def test_model(model, criterion, test_dataloader, args = args):
             all_labels = []
             for test_batch in test_dataloader:
                 test_inputs, test_labels = test_batch
+                test_inputs, test_labels = test_inputs.to(device), test_labels.to(device)
+                
                 y_pred_test = model(test_inputs)
                 loss = criterion(y_pred_test, test_labels)
                 dev_loss += loss.item()
