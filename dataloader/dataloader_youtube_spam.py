@@ -1,13 +1,50 @@
 import pandas as pd
+import torch
+from torch.utils.data import DataLoader, TensorDataset
+from sentence_transformers import SentenceTransformer
+
+embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')  # Example model with embedding size of 384
+
+
+def get_texts_embedding(text_list):
+    return embedding_model.encode(text_list)
 
 class YoutubeSpamDataset:
-    def __init__(self, data_path = 'dataset/youtube_spam'):
+    def __init__(self, batch_size = 32, data_path = 'dataset/youtube_spam'):
         self.data_path = data_path
+        self.batch_size = batch_size
         self.train_loader, self.dev_loader, self.test_loader = load_data(data_path)
         self.data_set = load_all_data(data_path)
 
     def load_data(self):
-        return self.train_loader, self.dev_loader, self.test_loader
+        train_data = self.train_loader
+        dev_data = self.dev_loader
+        test_data = self.test_loader
+
+        train_text_list = train_data['text'].tolist()
+        dev_text_list = dev_data['text'].tolist()
+        test_text_list = test_data['text'].tolist()
+
+        train_text_embeddings = get_texts_embedding(train_text_list)
+        dev_text_embeddings = get_texts_embedding(dev_text_list)
+        test_text_embeddings = get_texts_embedding(test_text_list)
+
+        train_text_embeddings = torch.tensor(train_text_embeddings)
+        dev_text_embeddings = torch.tensor(dev_text_embeddings)
+        test_text_embeddings = torch.tensor(test_text_embeddings)
+
+        train_y_true = torch.tensor(train_data['label'].values).float().unsqueeze(1)
+        dev_y_true = torch.tensor(dev_data['label'].values).float().unsqueeze(1)
+        test_y_true = torch.tensor(test_data['label'].values).float().unsqueeze(1)
+
+        train_dataloader = TensorDataset(train_text_embeddings, train_y_true)
+        train_dataloader = DataLoader(train_dataloader, batch_size=self.batch_size, shuffle=True)
+        dev_dataloader = TensorDataset(dev_text_embeddings, dev_y_true)
+        dev_dataloader = DataLoader(dev_dataloader, batch_size=self.batch_size, shuffle=False)
+        test_dataloader = TensorDataset(test_text_embeddings, test_y_true)
+        test_dataloader = DataLoader(test_dataloader, batch_size=self.batch_size, shuffle=False)
+
+        return train_dataloader, dev_dataloader, test_dataloader
 
     def load_all_data(self):
         return self.data_set
@@ -35,6 +72,4 @@ if __name__ == "__main__":
     utb_dataset = YoutubeSpamDataset()
     train_loader, dev_loader, test_loader = utb_dataset.load_data()
     data_set = utb_dataset.load_all_data()
-
-    print(train_loader.shape, dev_loader.shape, test_loader.shape)
-    print(data_set.shape)
+    print("Train data shape:", train_loader.dataset.tensors[0].shape)
