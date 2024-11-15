@@ -39,35 +39,36 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
                 loss.backward()
                 optimizer.step()
 
-            model.eval()
-            with torch.no_grad():
-                dev_loss = 0.0
-                correct = 0
-                total = 0
-                all_preds = []
-                all_labels = []
-                for dev_batch in dev_dataloader:
-                    dev_inputs, dev_labels = dev_batch
-                    y_pred_dev = model(dev_inputs)
-                    loss = criterion(y_pred_dev, dev_labels)
-                    dev_loss += loss.item()
-                    y_pred_dev_class = (y_pred_dev >= 0.5).float()
-                    correct += (y_pred_dev_class == dev_labels).sum().item()
-                    total += dev_labels.size(0)
-                    all_preds.extend(y_pred_dev_class.cpu().numpy())
-                    all_labels.extend(dev_labels.cpu().numpy())
+            if (epoch + 1) % args.eval_per_epochs == 0:
+                model.eval()
+                with torch.no_grad():
+                    dev_loss = 0.0
+                    correct = 0
+                    total = 0
+                    all_preds = []
+                    all_labels = []
+                    for dev_batch in dev_dataloader:
+                        dev_inputs, dev_labels = dev_batch
+                        y_pred_dev = model(dev_inputs)
+                        loss = criterion(y_pred_dev, dev_labels)
+                        dev_loss += loss.item()
+                        y_pred_dev_class = (y_pred_dev >= 0.5).float()
+                        correct += (y_pred_dev_class == dev_labels).sum().item()
+                        total += dev_labels.size(0)
+                        all_preds.extend(y_pred_dev_class.cpu().numpy())
+                        all_labels.extend(dev_labels.cpu().numpy())
 
-                dev_loss /= len(dev_dataloader)
-                dev_acc = correct / total
-                dev_f1 = f1_score(all_labels, all_preds)
-                log_file.write(
-                    f'Eval:::Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}, Dev Accuracy: {dev_acc:.4f}, Dev F1 Score: {dev_f1:.4f}\n')
-                print(
-                    f'Eval:::Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}, Dev Accuracy: {dev_acc:.4f}, Dev F1 Score: {dev_f1:.4f}')
+                    dev_loss /= len(dev_dataloader)
+                    dev_acc = correct / total
+                    dev_f1 = f1_score(all_labels, all_preds)
+                    log_file.write(
+                        f'Eval:::Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}, Dev Accuracy: {dev_acc:.4f}, Dev F1 Score: {dev_f1:.4f}\n')
+                    print(
+                        f'Eval:::Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}, Dev Accuracy: {dev_acc:.4f}, Dev F1 Score: {dev_f1:.4f}')
 
-            if dev_loss < best_loss:
-                best_loss = dev_loss
-                torch.save(model.state_dict(), best_model_path)
+                if dev_loss < best_loss:
+                    best_loss = dev_loss
+                    torch.save(model.state_dict(), best_model_path)
 
     # Save the best model
     torch.save(model.state_dict(), args.best_model_path)

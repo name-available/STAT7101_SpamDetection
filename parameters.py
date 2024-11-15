@@ -8,7 +8,7 @@ def get_parameters():
     args.add_argument('--batch_size', default=32, type=int)
 
     # model
-    args.add_argument('--best_model_path', default='checkpoints/best_lr_model.pth', type=str)
+    args.add_argument('--best_model_path', default='checkpoints/lr-4_model.pth', type=str)
     args.add_argument('--text_embedding_dim', default=384, type=int)
 
     # training
