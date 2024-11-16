@@ -1,12 +1,12 @@
 from torch import nn
 from model.logistic_regression import LogisticRegression
-from dataloader.dataloader_youtube_spam import YoutubeSpamDataset
+from dataloader.dataloader_steam import SteamReviewsDataset
 from train_test_setting import train_model, test_model
 from parameters import get_parameters
 
 
 def main(args):
-    ytb_dataset = YoutubeSpamDataset()
+    ytb_dataset = SteamReviewsDataset()
     train_loader, dev_loader, test_loader = ytb_dataset.load_data()
     print(train_loader.dataset.tensors[0].shape)
     print(dev_loader.dataset.tensors[0].shape)

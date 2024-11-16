@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch import optim
 
 class TransformerLR(nn.Module):
     def __init__(self, input_dim, num_heads=8, num_layers=6, dropout=0.5):
@@ -14,10 +15,24 @@ class TransformerLR(nn.Module):
     
 def main():
     model = TransformerLR(384)
-    example_X = torch.randn(2, 384)
+    criterion = nn.BCELoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    output = model(example_X)
-    print("Output shape:", output.shape)
+    # Example data
+    example_X = torch.randn(10, 384)  # Batch size of 10
+    example_y = torch.randint(0, 2, (10, 1)).float()  # Binary labels
+
+    # Training loop
+    model.train()
+    for epoch in range(100):  # Train for 100 epochs
+        optimizer.zero_grad()
+        outputs = model(example_X)
+        loss = criterion(outputs, example_y)
+        loss.backward()
+        optimizer.step()
+
+        if epoch % 10 == 0:
+            print(f"Epoch {epoch}, Loss: {loss.item()}")
 
 if __name__ == "__main__":
     main()
