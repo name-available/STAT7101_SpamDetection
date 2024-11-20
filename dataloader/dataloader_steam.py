@@ -69,8 +69,24 @@ def load_all_data(data_path = 'dataset/steam_reviews'):
 
     return data_set
 
+def load_data_for_han(data_path = 'dataset/steam_reviews'):
+    testset_path = data_path + '/train_dev_test_split/test.csv'
+    devset_path = data_path + '/train_dev_test_split/dev.csv'
+    trainset_path = data_path + '/train_dev_test_split/train.csv'
+
+    test_loader = pd.read_csv(testset_path)
+    dev_loader = pd.read_csv(devset_path)
+    train_loader = pd.read_csv(trainset_path)
+
+
+
+    return train_loader, dev_loader, test_loader
+
+def main():
+    train_loader, dev_loader, test_loader = load_data_for_han()
+    print(train_loader.shape)
+    print(dev_loader.shape)
+    print(test_loader.shape)
 
 if __name__ == "__main__":
-    steam_dataset = SteamReviewsDataset()
-    train_loader, dev_loader, test_loader = steam_dataset.load_data()
-    print(train_loader.dataset.tensors[0].shape)
+    main()

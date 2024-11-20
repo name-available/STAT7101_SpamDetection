@@ -2,7 +2,8 @@
 #training the model.
 #process--->1.load data(X:list of lint,y:int). 2.create session. 3.feed data. 4.training (5.validation) ,(6.prediction)
 import sys
-reload(sys)
+import importlib
+importlib.reload(sys)
 sys.setdefaultencoding('utf8')
 import tensorflow as tf
 import numpy as np
