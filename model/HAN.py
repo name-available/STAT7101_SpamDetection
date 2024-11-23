@@ -134,7 +134,8 @@ class HAN(nn.Module):
 
 def main():
     model = HAN()
-    x = torch.randn([1,1,384])
+    model.to('cuda')
+    x = torch.randn([1,1,384]).to('cuda')
     y = model(x)
     print(y.shape)
     print(y)
