@@ -7,11 +7,9 @@ from sklearn.metrics import f1_score
 from parameters import get_parameters
 from tqdm import tqdm
 
-args = get_parameters()
 
-def train_model(model, criterion, train_dataloader, dev_dataloader, args = args):
+def train_model(model, device, criterion, train_dataloader, dev_dataloader, args):
     
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("Training model with cude ..." if torch.cuda.is_available() else "Training model with cpu ...")
     
     model.to(device)
@@ -84,8 +82,7 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
     torch.save(model.state_dict(), args.best_model_path)
 
 
-def test_model(model, criterion, test_dataloader, args = args):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+def test_model(model, device, criterion, test_dataloader, args):
     print("Testing model with cude ..." if torch.cuda.is_available() else "Testing model with cpu ...")
     model.to(device)
 
