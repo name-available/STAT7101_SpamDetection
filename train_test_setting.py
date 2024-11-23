@@ -20,12 +20,7 @@ def train_model(model, criterion, train_dataloader, dev_dataloader, args = args)
         model.load_state_dict(torch.load(best_model_path))
 
     criterion = criterion
-
-
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
-
-
-
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Create checkpoints directory if it doesn't exist
     if not os.path.exists('checkpoints'):

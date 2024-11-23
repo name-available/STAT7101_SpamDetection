@@ -25,17 +25,11 @@ class attention_layer(nn.Module):
     # ------------------------------------------------
     # Input has shape [batch_size, seq_len, features]
     # ------------------------------------------------
-    def forward(self, x, mask):
+    def forward(self, x):
         global LOW_SENTINEL
         
         x1 = torch.tanh(torch.matmul(x, self.W) + self.b)
         x2 = torch.matmul( x1, self.context_vector)
-        mask = LongTensor(mask)
-        # ------------------------------------------------
-        # Before doing softmax
-        # mask out the locations where there is no word
-        # ------------------------------------------------
-        x2[mask==0] = LOW_SENTINEL
         x2 = x2.reshape([x2.shape[0],x2.shape[1],1])
         x3 = F.softmax(x2,dim=1)
         x4 = x3 * x
@@ -70,9 +64,9 @@ class word_encoder(nn.Module):
     
     # Input is a minibatch of sentences
     # X has shape [ batch_size, seq_len, features]
-    def forward(self,x, mask, h_0):
+    def forward(self,x, h_0):
         gru_op = self.bi_gru(x, h_0)[0]
-        att_op = self.att(gru_op, mask)
+        att_op = self.att(gru_op)
         return att_op
     
         
@@ -104,9 +98,9 @@ class sentence_encoder(nn.Module):
     
     # Input is a minibatch of sentences
     # X has shape [ batch_size, seq_len, features]
-    def forward(self, x, mask, h_0):
+    def forward(self, x, h_0):
         gru_op = self.bi_gru(x, h_0)[0]
-        att_op = self.att(gru_op, mask)
+        att_op = self.att(gru_op)
         return att_op
     
 
@@ -130,20 +124,20 @@ class HAN(nn.Module):
         self.han_op = HAN_op_layer(2*hidden_dim, num_classes)
         return
     
-    def forward(self,x, mask):
+    def forward(self,x):
         h_0_word = self.word_enc.get_init_state(x.shape[0])
-        word_enc_output = self.word_enc(x, mask, h_0_word)
+        word_enc_output = self.word_enc(x, h_0_word)
         h_0_sent = self.sent_enc.get_init_state(1)
-        sent_enc_output = self.sent_enc(word_enc_output.unsqueeze(0), np.array([1, 1]), h_0_sent)
+        sent_enc_output = self.sent_enc(word_enc_output.unsqueeze(0), h_0_sent)
         output = self.han_op(sent_enc_output.squeeze(0))
         return output
 
 def main():
     model = HAN()
-    x = FloatTensor(np.random.rand(5,10,384))
-    mask = np.random.randint(0,2,10)
-    y = model(x,mask)
+    x = FloatTensor(np.random.rand(16,1,384))
+    y = model(x)
     print(y.shape)
+    print(y)
 
 if __name__ == '__main__':
     main()

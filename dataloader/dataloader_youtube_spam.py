@@ -10,47 +10,21 @@ def get_texts_embedding(text_list):
     return embedding_model.encode(text_list)
 
 class YoutubeSpamDataset:
-    def __init__(self, batch_size = 32, data_path = 'dataset/youtube_spam'):
-        self.data_path = data_path
-        self.batch_size = batch_size
-        self.train_loader, self.dev_loader, self.test_loader = load_data(data_path)
-        self.data_set = load_all_data(data_path)
+    def __init__(self, data_set):
+        self.data_set = data_set
 
-    def load_data(self):
-        train_data = self.train_loader
-        dev_data = self.dev_loader
-        test_data = self.test_loader
+    def __getitem__(self, index):
+        x = self.data_set['text'][index]
+        y = self.data_set['label'][index]
 
-        train_text_list = train_data['text'].tolist()
-        dev_text_list = dev_data['text'].tolist()
-        test_text_list = test_data['text'].tolist()
-
-        train_text_embeddings = get_texts_embedding(train_text_list)
-        dev_text_embeddings = get_texts_embedding(dev_text_list)
-        test_text_embeddings = get_texts_embedding(test_text_list)
-
-        train_text_embeddings = torch.tensor(train_text_embeddings)
-        dev_text_embeddings = torch.tensor(dev_text_embeddings)
-        test_text_embeddings = torch.tensor(test_text_embeddings)
-
-        train_y_true = torch.tensor(train_data['label'].values).float().unsqueeze(1)
-        dev_y_true = torch.tensor(dev_data['label'].values).float().unsqueeze(1)
-        test_y_true = torch.tensor(test_data['label'].values).float().unsqueeze(1)
-
-        train_dataloader = TensorDataset(train_text_embeddings, train_y_true)
-        train_dataloader = DataLoader(train_dataloader, batch_size=self.batch_size, shuffle=True)
-        dev_dataloader = TensorDataset(dev_text_embeddings, dev_y_true)
-        dev_dataloader = DataLoader(dev_dataloader, batch_size=self.batch_size, shuffle=False)
-        test_dataloader = TensorDataset(test_text_embeddings, test_y_true)
-        test_dataloader = DataLoader(test_dataloader, batch_size=self.batch_size, shuffle=False)
-
-        return train_dataloader, dev_dataloader, test_dataloader
-
-    def load_all_data(self):
-        return self.data_set
+        x = get_texts_embedding([x])
+        return x, y
+    
+    def __len__(self):
+        return len(self.data_set)
 
 
-def load_data(data_path = 'dataset/youtube_spam'):
+def load_csv_data(data_path = 'dataset/youtube_spam'):
     testset_path = data_path + '/train_dev_test_split/test.csv'
     devset_path = data_path + '/train_dev_test_split/dev.csv'
     trainset_path = data_path + '/train_dev_test_split/train.csv'
@@ -68,8 +42,34 @@ def load_all_data(data_path = 'dataset/youtube_spam'):
 
     return data_set
 
+def load_data(batch_size = 32, data_path = '/userhome/cs2/wang1210/STAT7101_spam_detection/dataset/youtube_spam'):
+    test_loader, dev_loader, train_loader = load_csv_data(data_path)
+    test_loader = YoutubeSpamDataset(test_loader)
+    dev_loader = YoutubeSpamDataset(dev_loader)
+    train_loader = YoutubeSpamDataset(train_loader)
+
+    test_set = DataLoader(test_loader, batch_size=batch_size, shuffle=True)
+    dev_set = DataLoader(dev_loader, batch_size=batch_size, shuffle=False)
+    train_set = DataLoader(train_loader, batch_size=batch_size, shuffle=False)
+
+    return train_set, dev_set, test_set
+
+def main():
+    train_loader, dev_loader, test_loader = load_data()
+    for i, (x, y) in enumerate(train_loader):
+        print(x.shape, y.shape)
+        break
+
+    for i, (x, y) in enumerate(dev_loader):
+        print(x.shape, y.shape)
+        break
+
+    for i, (x, y) in enumerate(test_loader):
+        print(x.shape, y.shape)
+        break
+
+    return
+
+
 if __name__ == "__main__":
-    utb_dataset = YoutubeSpamDataset()
-    train_loader, dev_loader, test_loader = utb_dataset.load_data()
-    data_set = utb_dataset.load_all_data()
-    print("Train data shape:", train_loader.dataset.tensors[0].shape)
+    main()

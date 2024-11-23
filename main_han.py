@@ -1,26 +1,38 @@
 from torch import nn
-from model.HAN import HierarchialAttentionNetwork
-from dataloader.dataloader_youtube_spam import YoutubeSpamDataset
+from model.HAN import HAN
+from dataloader.dataloader_youtube_spam import load_data as load_data_youtube_spam
 from train_test_setting import train_model, test_model
-from parameters import get_parameters
+import argparse
 
 
 def main(args):
-    ytb_dataset = YoutubeSpamDataset()
-    train_loader, dev_loader, test_loader = ytb_dataset.load_data()
-    
-    print(train_loader.dataset.tensors[0].shape)
-    print(dev_loader.dataset.tensors[0].shape)
-    print(test_loader.dataset.tensors[0].shape)
+    train_loader, dev_loader, test_loader = load_data_youtube_spam(batch_size=1)
+    model = HAN(inp_emb_dim=args.text_embedding_dim, hidden_dim=args.hidden_dim, num_classes=2)
+    criterion = nn.CrossEntropyLoss()
+    train_model(model, train_loader, dev_loader, criterion, args)
+    test_model(model, test_loader, criterion, args)
 
-
-    # model = HierarchialAttentionNetwork(n_classes=2, vocab_size=100, emb_size=384, word_rnn_size=50, sentence_rnn_size=50,
-    #                                     word_rnn_layers=1, sentence_rnn_layers=1, word_att_size=100, sentence_att_size=100,
-    #                                     dropout=0.5)
-    # criterion = nn.BCELoss()
-    # train_model(model, criterion=criterion, train_dataloader=train_loader, dev_dataloader=dev_loader)
-    # test_model(model, criterion=criterion, test_dataloader=test_loader)
 
 if __name__ == "__main__":
-    args = get_parameters()
+    args = argparse.ArgumentParser('Training and Evaluation script', add_help=False)
+    # data
+    args.add_argument('--data_path', default='dataset/youtube_spam', type=str)
+    args.add_argument('--batch_size', default=1, type=int)
+
+    # model
+    args.add_argument('--best_model_path', default='checkpoints/han.pth', type=str)
+    args.add_argument('--text_embedding_dim', default=384, type=int)
+    args.add_argument('--hidden_dim', default=128, type=int)
+
+    args.add_argument('--atte_head_num', default=8, type=int)
+    args.add_argument('--layer_num', default=6, type=int)
+    args.add_argument('--dropout', default=0.5, type=float)
+
+    # training
+    args.add_argument('--epochs', default=20, type=int)
+    args.add_argument('--eval_per_epochs', default=10, type=int)
+
+    # logging
+    args.add_argument('--log_file_name', default="han-utb.log", type=str)
+
     main(args)
