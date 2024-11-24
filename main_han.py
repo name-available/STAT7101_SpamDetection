@@ -9,7 +9,7 @@ import argparse
 def main(args):
     train_loader, dev_loader, test_loader = load_data_youtube_spam(batch_size=1)
     model = HAN(inp_emb_dim=args.text_embedding_dim, hidden_dim=args.hidden_dim, num_classes=2)
-    criterion = nn.BCELoss()
+    criterion = nn.BCEWithLogitsLoss()
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     train_model(model = model, criterion = criterion,
@@ -41,8 +41,8 @@ def get_args():
     args.add_argument('--dropout', default=0.5, type=float)
 
     # training
-    args.add_argument('--epochs', default=20, type=int)
-    args.add_argument('--eval_per_epochs', default=10, type=int)
+    args.add_argument('--epochs', default=40, type=int)
+    args.add_argument('--eval_per_epochs', default=2, type=int)
 
     # logging
     args.add_argument('--log_file_name', default="han-utb.log", type=str)

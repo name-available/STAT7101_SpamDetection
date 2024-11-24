@@ -15,9 +15,10 @@ class YoutubeSpamDataset:
 
     def __getitem__(self, index):
         x = self.data_set['text'][index]
-        y = float(self.data_set['label'][index])
+        y = self.data_set['label'][index]
 
         x = get_texts_embedding([x])
+        y = torch.tensor(y, dtype=torch.float32)
         
         return x, y
     
@@ -43,8 +44,8 @@ def load_all_data(data_path = 'dataset/youtube_spam'):
 
     return data_set
 
-def load_data(batch_size = 32, data_path = '/userhome/cs2/wang1210/STAT7101_SpamDetection/dataset/youtube_spam'):
-    test_loader, dev_loader, train_loader = load_csv_data(data_path)
+def load_data(batch_size = 1, data_path = '/userhome/cs2/wang1210/STAT7101_SpamDetection/dataset/youtube_spam'):
+    train_loader, dev_loader, test_loader = load_csv_data(data_path)
     test_loader = YoutubeSpamDataset(test_loader)
     dev_loader = YoutubeSpamDataset(dev_loader)
     train_loader = YoutubeSpamDataset(train_loader)
