@@ -1,1 +1,11 @@
-Eval:::Epoch [2/40], Loss: 0.0247, Dev Accuracy: 0.8014, Dev F1 Score: 0.7071
+
+Eval:::Epoch [2/10], Loss: 0.0186, Dev Accuracy: 0.7877, Dev F1 Score: 0.6804
+Eval:::Epoch [4/10], Loss: 0.0568, Dev Accuracy: 0.8014, Dev F1 Score: 0.7290
+Eval:::Epoch [6/10], Loss: 0.0555, Dev Accuracy: 0.8356, Dev F1 Score: 0.7818
+Eval:::Epoch [8/10], Loss: 0.0234, Dev Accuracy: 0.8151, Dev F1 Score: 0.7568
+Eval:::Epoch [2/10], Loss: 0.0187, Dev Accuracy: 0.8151, Dev F1 Score: 0.7568
+Eval:::Epoch [4/10], Loss: 0.0145, Dev Accuracy: 0.8356, Dev F1 Score: 0.7647
+Eval:::Epoch [6/10], Loss: 0.0238, Dev Accuracy: 0.8288, Dev F1 Score: 0.7664
+Eval:::Epoch [8/10], Loss: 0.0140, Dev Accuracy: 0.8219, Dev F1 Score: 0.7679
+Eval:::Epoch [10/10], Loss: 0.0091, Dev Accuracy: 0.8356, Dev F1 Score: 0.7857
+Test:::Loss: 0.0828, Test Accuracy: 0.7823, Test F1 Score: 0.7538

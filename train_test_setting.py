@@ -23,13 +23,11 @@ def train_model(model, device, criterion, train_dataloader, dev_dataloader, args
     if not os.path.exists('checkpoints'):
         os.makedirs('checkpoints')
 
-    best_loss = float('inf')
     best_model_path = args.best_model_path
 
 
     num_epochs = args.epochs
     
-    best_loss = 0.0
     for epoch in range(num_epochs):
         model.train()
         for batch in tqdm(train_dataloader, desc=f"Training Epoch {epoch + 1}/{num_epochs}"):
@@ -43,10 +41,10 @@ def train_model(model, device, criterion, train_dataloader, dev_dataloader, args
             optimizer.step()
 
         if (epoch + 1) % args.eval_per_epochs == 0:
-            best_loss = eval_model(best_loss, model, epoch, device, criterion, dev_dataloader, args)
+            eval_model(model, epoch, device, criterion, dev_dataloader, args)
 
 
-def eval_model(best_loss, model, epoch, device, criterion, dev_dataloader, args):
+def eval_model(model, epoch, device, criterion, dev_dataloader, args):
     model.to(device)
 
     criterion = criterion
@@ -85,10 +83,8 @@ def eval_model(best_loss, model, epoch, device, criterion, dev_dataloader, args)
             print(
                 f'Eval:::Epoch [{epoch + 1}/{args.epochs}], Loss: {loss.item():.4f}, Dev Accuracy: {dev_acc:.4f}, Dev F1 Score: {dev_f1:.4f}')
 
-        if dev_loss < best_loss:
-            best_loss = dev_loss
-            torch.save(model.state_dict(), args.best_model_path)
-    return best_loss
+        
+    torch.save(model.state_dict(), args.best_model_path)
 
 
 def test_model(model, device, criterion, test_dataloader, args):

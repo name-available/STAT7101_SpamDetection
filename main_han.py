@@ -43,7 +43,7 @@ def get_args():
     args.add_argument('--dropout', default=0.5, type=float)
 
     # training
-    args.add_argument('--epochs', default=40, type=int)
+    args.add_argument('--epochs', default=10, type=int)
     args.add_argument('--eval_per_epochs', default=2, type=int)
 
     # logging
