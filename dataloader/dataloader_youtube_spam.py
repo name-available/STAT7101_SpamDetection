@@ -15,9 +15,10 @@ class YoutubeSpamDataset:
 
     def __getitem__(self, index):
         x = self.data_set['text'][index]
-        y = self.data_set['label'][index]
+        y = float(self.data_set['label'][index])
 
         x = get_texts_embedding([x])
+        
         return x, y
     
     def __len__(self):
@@ -42,7 +43,7 @@ def load_all_data(data_path = 'dataset/youtube_spam'):
 
     return data_set
 
-def load_data(batch_size = 32, data_path = '/userhome/cs2/wang1210/STAT7101_spam_detection/dataset/youtube_spam'):
+def load_data(batch_size = 32, data_path = '/userhome/cs2/wang1210/STAT7101_SpamDetection/dataset/youtube_spam'):
     test_loader, dev_loader, train_loader = load_csv_data(data_path)
     test_loader = YoutubeSpamDataset(test_loader)
     dev_loader = YoutubeSpamDataset(dev_loader)

@@ -10,7 +10,7 @@ def main(args):
     train_loader, dev_loader, test_loader = load_data_youtube_spam(batch_size=1)
     model = HAN(inp_emb_dim=args.text_embedding_dim, hidden_dim=args.hidden_dim, num_classes=2)
     criterion = nn.BCELoss()
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     train_model(model = model, criterion = criterion,
                 device=device,
