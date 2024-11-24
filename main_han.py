@@ -1,13 +1,15 @@
 from torch import nn
 import torch
 from model.HAN import HAN
+from dataloader.dataloader_steam import load_data as load_data_steam
 from dataloader.dataloader_youtube_spam import load_data as load_data_youtube_spam
+
 from train_test_setting import train_model, test_model
 import argparse
 
 
 def main(args):
-    train_loader, dev_loader, test_loader = load_data_youtube_spam(batch_size=1)
+    train_loader, dev_loader, test_loader = load_data_steam(batch_size=1)
     model = HAN(inp_emb_dim=args.text_embedding_dim, hidden_dim=args.hidden_dim, num_classes=2)
     criterion = nn.BCEWithLogitsLoss()
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -45,7 +47,7 @@ def get_args():
     args.add_argument('--eval_per_epochs', default=2, type=int)
 
     # logging
-    args.add_argument('--log_file_name', default="han-utb.log", type=str)
+    args.add_argument('--log_file_name', default="han-steam.log", type=str)
 
     return args.parse_args()
 
